@@ -1,0 +1,21 @@
+.totalbody {
+  background: rgba(70, 65, 65, 0.2);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(247, 240, 240, 0.15);
+  border-radius: 4px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+  /* background: rgb(173, 173, 173); */
+
+  /* background: linear-gradient(45deg, #ff237b, #f64838); */
+
+  background: linear-gradient(45deg, rgb(15, 23, 42), rgb(35, 66, 105) 100%);
+  color: rgb(226, 226, 226);
+}
+
+.Logo {
+  color: rgb(252, 252, 252);
+}
+
+.navitems {
+  margin-left: 40px;
+}
