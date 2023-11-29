@@ -1,8 +1,25 @@
-# React + Vite
+# MERN Password Reset Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a full-stack MERN (MongoDB, Express.js, React.js, Node.js) project that includes user authentication with JWT tokens and password reset functionality using Nodemailer.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User Registration and Login with JWT authentication.
+- Password reset using Nodemailer.
+- Secure password storage using hashing.
+- MongoDB as the database.
+- React.js for the frontend.
+
+## Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+
+- Node.js and npm installed.
+- MongoDB installed and running.
+
+## Getting Started
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/HarishVinayagamoorthy/Password-Reset
