@@ -38,7 +38,7 @@ function ResetPassword() {
     } catch (error) {
       // Handle errors from the backend
       setMessage(error.response.data.message);
-      if (error.response.status === 400) {
+      if (error.response.status === 404) {
         toast.error(error.response.data.message);
       }
       if (error.response.status === 401) {
