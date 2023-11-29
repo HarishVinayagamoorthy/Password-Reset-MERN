@@ -99,7 +99,7 @@ const resetpassword = async (req, res) => {
         pass: "waus emun paoe usbe",
       },
     });
-    const resetUrl = `${`http://localhost:5173/resetpassword`}`;
+    const resetUrl = `${`https://forgotpassword-reset.netlify.app/resetpassword`}`;
 
     const message = {
       from: "harishvinayagamoorthi@gmail.com",

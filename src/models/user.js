@@ -4,25 +4,28 @@ const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
-      require: [true, "First Name is Required"],
+      required: [true, "First Name is Required"],
       trim: true,
     },
 
     lastName: {
       type: String,
-      require: [true, "Last Name is Required"],
+      required: [true, "Last Name is Required"],
       trim: true,
     },
 
     role: {
       type: String,
       default: "user",
+      enum: ["user", "admin"], // Ensures that role is either "user" or "admin"
     },
 
     password: {
       type: String,
       required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters long"],
     },
+
     resetPasswordToken: {
       type: String,
     },
@@ -31,19 +34,29 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
+      trim: true,
+      lowercase: true,
+      match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
     },
 
-    datecreated: Date,
-    dateUpdated: Date,
+    datecreated: {
+      type: Date,
+      default: Date.now,
+    },
+    dateUpdated: {
+      type: Date,
+      default: null,
+    },
   },
-
   {
     collection: "users",
     versionKey: false,
     timestamps: true,
   }
 );
+
 const userModel = mongoose.model("users", userSchema);
+
 export default userModel;
