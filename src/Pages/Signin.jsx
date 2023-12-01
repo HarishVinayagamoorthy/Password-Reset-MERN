@@ -1,34 +1,23 @@
-import React, { useState } from "react";
-import { toast } from "react-toastify";
+import React from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import AxiosService from "../components/utils/ApiService";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useNavigate, Link } from "react-router-dom";
 import Spinner from "../components/Sipnners"; // Import your Spinner component
 import Signincss from "./signin.module.css";
 
 function Signin() {
-  const navigate = useNavigate();
-
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    password: Yup.string().required("Password is required"),
   });
 
-  const [loading, setLoading] = useState(false); // New loading state
+  const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
-    // Basic form validation
-    if (!loginData.email || !loginData.password) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-
+  const handleLogin = async (values, { setSubmitting }) => {
     try {
-      setLoading(true); // Set loading to true when starting the login process
-
-      const response = await AxiosService.post("/user/signin", loginData);
+      const response = await AxiosService.post("/user/signin", values);
       if (response.status === 200) {
         toast.success(response.data.message);
         navigate("/Home");
@@ -41,9 +30,18 @@ function Signin() {
     } catch (error) {
       toast.error(error.response.data.message);
     } finally {
-      setLoading(false); // Set loading to false when the login process is complete
+      setSubmitting(false);
     }
   };
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: handleLogin,
+  });
 
   return (
     <>
@@ -52,30 +50,38 @@ function Signin() {
           <div className={Signincss.circle1}></div>
           <div className={Signincss.circle2}></div>
         </div>
-        <form onSubmit={handleLogin} className={Signincss.login_form}>
+        <form onSubmit={formik.handleSubmit} className={Signincss.login_form}>
           <h1>Welcome back!</h1>
           <p>Login to your account.</p>
           <input
             type="email"
+            name="email"
             className={Signincss.formcontrol}
             placeholder="Email"
-            value={loginData.email}
-            onChange={(e) =>
-              setLoginData({ ...loginData, email: e.target.value })
-            }
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
           />
+          {formik.touched.email && formik.errors.email && (
+            <p className={Signincss.error}>{formik.errors.email}</p>
+          )}
 
           <input
             type="password"
+            name="password"
             className={Signincss.formcontrol}
             placeholder="Password"
-            value={loginData.password}
-            onChange={(e) =>
-              setLoginData({ ...loginData, password: e.target.value })
-            }
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
           />
+          {formik.touched.password && formik.errors.password && (
+            <p className={Signincss.error}>{formik.errors.password}</p>
+          )}
 
-          <button type="submit">{loading ? <Spinner /> : "Login"}</button>
+          <button type="submit" disabled={formik.isSubmitting}>
+            {formik.isSubmitting ? <Spinner /> : "Login"}
+          </button>
 
           <div className="mt-3">
             <Link to="/Forgotpassword" className={Signincss.signuptext}>

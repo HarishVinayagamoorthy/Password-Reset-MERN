@@ -1,41 +1,45 @@
-import React, { useState } from "react";
+import React from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import AxiosService from "../components/utils/ApiService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../components/Sipnners"; // Import your Spinner component
 
 import Forgotpassword from "./forgot.module.css";
-const Resetpassword = () => {
-  const navigate = useNavigate();
 
-  const [resetPasswordData, setResetPasswordData] = useState({
-    email: "",
+const ResetPassword = () => {
+  const validationSchema = Yup.object().shape({
+    email: Yup.string().email("Invalid email").required("Email is required"),
   });
-  const [loading, setLoading] = useState(false); // New loading state
+
+  const navigate = useNavigate();
 
   const handleCancel = () => {
     navigate("/");
   };
 
-  const handleResetPassword = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      setLoading(true);
-      const response = await AxiosService.post(
-        "/user/resetpassword",
-        resetPasswordData
-      );
-      toast.success(
-        `OTP and Link Send Successfully to ${resetPasswordData.email} `
-      );
+      const response = await AxiosService.post("/user/resetpassword", values);
+      toast.success(`OTP and Link Sent Successfully to ${values.email}`);
+      navigate("/resetpassword");
       console.log(response.data.message);
     } catch (error) {
       console.error(error.response.data.message);
       toast.error(error.response.data.message);
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: handleSubmit,
+  });
 
   return (
     <>
@@ -45,25 +49,26 @@ const Resetpassword = () => {
           <div className={Forgotpassword.circle2}></div>
         </div>
         <form
-          onSubmit={handleResetPassword}
+          onSubmit={formik.handleSubmit}
           className={Forgotpassword.login_form}
         >
           <h1>Welcome back!</h1>
           <p>Forgot Password</p>
           <input
             type="email"
+            name="email"
             className={Forgotpassword.formcontrol}
             placeholder="Email"
-            value={resetPasswordData.email}
-            onChange={(e) =>
-              setResetPasswordData({
-                ...resetPasswordData,
-                email: e.target.value,
-              })
-            }
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
           />
-          <button type="submit">
-            {loading ? <Spinner /> : "Reset Password"}
+          {formik.touched.email && formik.errors.email && (
+            <p className={Forgotpassword.error}>{formik.errors.email}</p>
+          )}
+
+          <button type="submit" disabled={formik.isSubmitting}>
+            {formik.isSubmitting ? <Spinner /> : "Reset Password"}
           </button>
           <button type="button" onClick={handleCancel}>
             Cancel
@@ -74,4 +79,4 @@ const Resetpassword = () => {
   );
 };
 
-export default Resetpassword;
+export default ResetPassword;
