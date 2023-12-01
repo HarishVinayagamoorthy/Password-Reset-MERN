@@ -60,22 +60,13 @@ function UserNavLinks() {
   let logout = useLogout();
   return (
     <>
-      <Nav.Item
-        onClick={() => navigate("/home")}
-        className={Headercss.navitems}
-      >
+      <Nav.Item onClick={() => navigate("#")} className={Headercss.navitems}>
         Home
       </Nav.Item>
-      <Nav.Item
-        onClick={() => navigate("/dashboard")}
-        className={Headercss.navitems}
-      >
+      <Nav.Item onClick={() => navigate("#")} className={Headercss.navitems}>
         Dashboard
       </Nav.Item>
-      <Nav.Item
-        onClick={() => navigate("/create")}
-        className={Headercss.navitems}
-      >
+      <Nav.Item onClick={() => navigate("#")} className={Headercss.navitems}>
         Create
       </Nav.Item>
     </>
