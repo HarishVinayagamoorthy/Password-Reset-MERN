@@ -1,6 +1,9 @@
 import users from "../models/user.js";
 import Auth from "../common/auth.js";
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // Singup
 const create = async (req, res) => {
@@ -86,7 +89,15 @@ const resetpassword = async (req, res) => {
       return res.status(404).send({ message: "user not found" });
     }
 
-    const token = Math.random().toString(36).slice(-8);
+    // const token = Math.random().toString(36).slice(-8);
+    const generateOTP = () => {
+      const characters = "0123456789";
+      return Array.from(
+        { length: 6 },
+        () => characters[Math.floor(Math.random() * characters.length)]
+      ).join("");
+    };
+    const token = generateOTP();
     user.resetPasswordToken = token;
     user.resetPasswordExpires = Date.now() + 300000; //5 minutes
 
@@ -95,8 +106,8 @@ const resetpassword = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "harishvinayagamoorthi@gmail.com",
-        pass: "waus emun paoe usbe",
+        user:  process.env.USER_MAILER,
+        pass: process.env.PASS_MAILER,
       },
     });
     const resetUrl = `${`https://forgotpassword-reset.netlify.app/resetpassword`}`;
@@ -105,9 +116,10 @@ const resetpassword = async (req, res) => {
       from: "harishvinayagamoorthi@gmail.com",
       to: user.email,
       subject: "Password Reset Request",
-      text: `You are Receiving this email because you (or Someone Else) has requested a password reset for your account.\n\n Please use the Password:${token}\n\n if you did not requested a password reset ,Please ignore this email.
-  pls click this link to Reset Password 
-${resetUrl} `,
+      text: `<p>You are receiving this email because you (or someone else) has requested a password reset for your account.</p>
+      <p>Please use the following OTP to reset your password: <strong>${token}</strong></p>
+      <p>If you did not request a password reset, please ignore this email.</p>
+      <p>Please click the following link to reset your password: <a href="${resetUrl}">${resetUrl}</a></p>`,
     };
 
     transporter.sendMail(message, function (error, info) {
@@ -164,34 +176,7 @@ const passwordtoken = async (req, res) => {
   }
 };
 
-// const passwordtoken = async (req, res) => {
 
-//     try {
-
-//         const { token } = req.params;
-//         const { password } = req.body;
-
-//         const user = await users.findOne({
-//             resetPasswordToken: token,
-//             resetPasswordExpires: { $gt: Date.now() },
-//         });
-
-//         if (!user) {
-//             return res.status(404).json({ message: 'Invalid Token' });
-//         }
-// else{
-//         user.password = await Auth.hashPassword(password);
-//         user.resetPasswordToken = null;
-//         user.resetPasswordExpires = null;
-//         await user.save();
-
-//         res.json({ message: 'Password reset successfully' });
-// }
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ message: 'Internal Server Error' });
-//     }
-// };
 
 export default {
   create,
