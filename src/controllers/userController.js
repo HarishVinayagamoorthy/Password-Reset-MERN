@@ -112,19 +112,23 @@ const resetpassword = async (req, res) => {
     });
     const resetUrl = `${`https://forgotpassword-reset.netlify.app/resetpassword`}`;
 
-    const message = {
+    const mailOptions = {
       from: "harishvinayagamoorthi@gmail.com",
       to: user.email,
       subject: "Password Reset Request",
-      html: `<p>Dear ${user.firstName} ${user.lastName},</p>
-      <p>You are receiving this email because you (or someone else) has requested a password reset for your account.</p>
-      <p>Please use the following OTP to reset your password: <strong>${token}</strong></p>
-      <p>If you did not request a password reset, please ignore this email.</p>
-      <p>Please click the following link to reset your password: <a href="${resetUrl}">${resetUrl}</a></p>`,
+      html: `
+      <p>Dear ${user.firstName} ${user.lastName},</p>
+      <p>We received a request to reset your password. Here is your One-Time Password (OTP): <strong>${token}</strong></p>
+      <p>This OTP is Expired in 5 minutes </p>
+      <p>Please click the following link to reset your password:</p>
+      <a href=${resetUrl}>Reset Password</a>
+      <p>If you did not make this request, please ignore this email.</p>
+      <p>Thank you,</p>
+      <p>From Validation</p>
+    `,
     };
-    
 
-    transporter.sendMail(message, function (error, info) {
+    transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         res.status(404).json({ message: "Something Went Wrong, try Again!" });
       } else {
