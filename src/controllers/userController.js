@@ -116,11 +116,13 @@ const resetpassword = async (req, res) => {
       from: "harishvinayagamoorthi@gmail.com",
       to: user.email,
       subject: "Password Reset Request",
-      text: `<p>You are receiving this email because you (or someone else) has requested a password reset for your account.</p>
+      html: `<p>Dear ${user.firstName} ${user.lastName},</p>
+      <p>You are receiving this email because you (or someone else) has requested a password reset for your account.</p>
       <p>Please use the following OTP to reset your password: <strong>${token}</strong></p>
       <p>If you did not request a password reset, please ignore this email.</p>
       <p>Please click the following link to reset your password: <a href="${resetUrl}">${resetUrl}</a></p>`,
     };
+    
 
     transporter.sendMail(message, function (error, info) {
       if (error) {
